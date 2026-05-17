@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/mood_entry.dart';
 import '../painters/mood_painter.dart';
 
+/// A widget that renders a custom painted face based on the [MoodType].
 class MoodFace extends StatelessWidget {
   final MoodType mood;
   final double size;
@@ -16,7 +17,8 @@ class MoodFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = color ?? _getColorForMood(mood, Theme.of(context).colorScheme);
+    // Use provided color or fallback to the mood's default color
+    final effectiveColor = color ?? mood.color;
     
     return CustomPaint(
       size: Size(size, size),
@@ -25,20 +27,5 @@ class MoodFace extends StatelessWidget {
         color: effectiveColor,
       ),
     );
-  }
-
-  Color _getColorForMood(MoodType mood, ColorScheme colorScheme) {
-    switch (mood) {
-      case MoodType.happy:
-        return Colors.amber;
-      case MoodType.neutral:
-        return Colors.blueGrey;
-      case MoodType.sad:
-        return Colors.blue;
-      case MoodType.angry:
-        return Colors.red;
-      case MoodType.frustrated:
-        return Colors.orange;
-    }
   }
 }

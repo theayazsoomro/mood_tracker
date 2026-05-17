@@ -24,6 +24,7 @@ class HomeScreen extends StatelessWidget {
                 child: CustomScrollView(
                   physics: const BouncingScrollPhysics(),
                   slivers: [
+                    // Header Section
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(
@@ -32,24 +33,30 @@ class HomeScreen extends StatelessWidget {
                           horizontalPadding,
                           isSmall ? 40 : 64,
                         ),
-                        child: _buildHeader(context, isSmall),
+                        child: _HeaderSection(isSmall: isSmall),
                       ),
                     ),
+                    
+                    // Mood Selection Grid
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                         child: _MoodSelectionSection(isSmall: isSmall),
                       ),
                     ),
+                    
                     SliverToBoxAdapter(
                       child: SizedBox(height: isSmall ? 64 : 100),
                     ),
+                    
+                    // Recent Journey Timeline
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                         child: _TimelineSection(isSmall: isSmall),
                       ),
                     ),
+                    
                     const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
                   ],
                 ),
@@ -60,8 +67,14 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildHeader(BuildContext context, bool isSmall) {
+class _HeaderSection extends StatelessWidget {
+  final bool isSmall;
+  const _HeaderSection({required this.isSmall});
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Text(
@@ -98,6 +111,7 @@ class _MoodSelectionSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // We don't need to listen here because we only perform an action
     final provider = Provider.of<MoodProvider>(context, listen: false);
 
     return Wrap(
@@ -107,9 +121,7 @@ class _MoodSelectionSection extends StatelessWidget {
       children: MoodType.values.map((type) {
         return MoodCard(
           type: type,
-          onTap: () {
-            provider.addMood(type);
-          },
+          onTap: () => provider.addMood(type),
         );
       }).toList(),
     );
@@ -124,37 +136,19 @@ class _TimelineSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final entries = context.watch<MoodProvider>().entries;
 
-    if (entries.isEmpty) return const SizedBox.shrink();
-
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.indigo.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.history_rounded, color: Colors.indigo, size: 20),
-            ),
-            const SizedBox(width: 14),
-            Text(
-              'Your Recent Journey',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: const Color(0xFF334155),
-                    fontSize: isSmall ? 20 : 24,
-                    letterSpacing: -0.5,
-                  ),
-            ),
-          ],
+        _SectionHeader(
+          title: 'Your Recent Journey',
+          icon: Icons.history_rounded,
+          isSmall: isSmall,
         ),
-        const SizedBox(height: 48),
-        SizedBox(
-          height: 180,
-          child: Center(
+        const SizedBox(height: 32),
+        if (entries.isEmpty)
+          const _EmptyTimelineState()
+        else
+          SizedBox(
+            height: 200, // Increased height to prevent overflow and accommodate scale animations
             child: ListView.separated(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
@@ -163,12 +157,90 @@ class _TimelineSection extends StatelessWidget {
               itemCount: entries.length,
               separatorBuilder: (_, __) => const SizedBox(width: 16),
               itemBuilder: (context, index) {
+                // Showing latest entries first if needed, but provider keeps them in order
                 return TimelineCard(entry: entries[index]);
               },
             ),
           ),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final bool isSmall;
+
+  const _SectionHeader({
+    required this.title,
+    required this.icon,
+    required this.isSmall,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.indigo.withValues(alpha: 0.08),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: Colors.indigo, size: 20),
+        ),
+        const SizedBox(width: 14),
+        Text(
+          title,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w800,
+                color: const Color(0xFF334155),
+                fontSize: isSmall ? 20 : 24,
+                letterSpacing: -0.5,
+              ),
         ),
       ],
+    );
+  }
+}
+
+class _EmptyTimelineState extends StatelessWidget {
+  const _EmptyTimelineState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: const Color(0xFFE2E8F0)),
+      ),
+      child: Column(
+        children: [
+          Icon(Icons.auto_awesome_rounded, size: 48, color: Colors.indigo.withValues(alpha: 0.3)),
+          const SizedBox(height: 16),
+          Text(
+            'No moods logged yet',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Start by selecting how you feel above!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.grey.shade400,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

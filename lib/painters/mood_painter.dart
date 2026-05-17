@@ -13,12 +13,14 @@ class MoodPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = min(size.width / 2, size.height / 2);
 
+    // Main stroke paint for face outlines and features
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width * 0.06
       ..strokeCap = StrokeCap.round;
 
+    // Subtle fill for the face background
     final fillPaint = Paint()
       ..color = color.withValues(alpha: 0.1)
       ..style = PaintingStyle.fill;

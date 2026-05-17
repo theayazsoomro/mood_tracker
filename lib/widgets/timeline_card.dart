@@ -75,80 +75,74 @@ class _TimelineCardState extends State<TimelineCard> with SingleTickerProviderSt
     }
   }
 
-  Color _getMoodColor(MoodType type) {
-    switch (type) {
-      case MoodType.happy: return Colors.amber;
-      case MoodType.neutral: return Colors.blueGrey;
-      case MoodType.sad: return Colors.blue;
-      case MoodType.angry: return Colors.red;
-      case MoodType.frustrated: return Colors.orange;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final color = _getMoodColor(widget.entry.type);
+    final color = widget.entry.type.color;
+    final dateStr = DateFormat('E, d').format(widget.entry.date);
 
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: _onTap,
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Transform.translate(
-              offset: Offset(0, _translateAnimation.value),
-              child: Transform.scale(
-                scale: _scaleAnimation.value,
-                child: Container(
-                  width: 100,
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: color.withValues(alpha:_glowAnimation.value),
-                        blurRadius: 15,
-                        spreadRadius: _glowAnimation.value * 10,
-                        offset: const Offset(0, 4),
-                      ),
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        DateFormat('E, d').format(widget.entry.date),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF94A3B8),
-                          letterSpacing: 0.5,
+    return Semantics(
+      label: 'Mood entry from $dateStr: ${widget.entry.type.label}',
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: _onTap,
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(0, _translateAnimation.value),
+                child: Transform.scale(
+                  scale: _scaleAnimation.value,
+                  child: Container(
+                    width: 100,
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withValues(alpha:_glowAnimation.value),
+                          blurRadius: 15,
+                          spreadRadius: _glowAnimation.value * 10,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      MoodFace(mood: widget.entry.type, size: 40, color: color),
-                      const SizedBox(height: 12),
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.8),
-                          shape: BoxShape.circle,
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.04),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          dateStr,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFF94A3B8),
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        MoodFace(mood: widget.entry.type, size: 40, color: color),
+                        const SizedBox(height: 12),
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: color.withValues(alpha: 0.8),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
