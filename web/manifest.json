@@ -1,11 +1,11 @@
 {
-    "name": "mood_tracker",
-    "short_name": "mood_tracker",
+    "name": "Mindful Mood Tracker",
+    "short_name": "Mindful Moods",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "Flutter Mood Tracker App.",
+    "background_color": "#F8FAFC",
+    "theme_color": "#6366F1",
+    "description": "A beautiful and intuitive Mood Tracker built with Flutter.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

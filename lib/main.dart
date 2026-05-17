@@ -20,12 +20,12 @@ class MoodTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Mood Tracker',
+      title: 'Mindful Moods',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.teal,
+          seedColor: Colors.indigo,
           brightness: Brightness.light,
         ),
         textTheme: const TextTheme(
