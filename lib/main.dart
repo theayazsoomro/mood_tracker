@@ -6,9 +6,7 @@ import 'providers/mood_provider.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => MoodProvider()),
-      ],
+      providers: [ChangeNotifierProvider(create: (_) => MoodProvider())],
       child: const MoodTrackerApp(),
     ),
   );

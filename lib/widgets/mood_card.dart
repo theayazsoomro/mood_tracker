@@ -6,17 +6,14 @@ class MoodCard extends StatefulWidget {
   final MoodType type;
   final VoidCallback onTap;
 
-  const MoodCard({
-    super.key,
-    required this.type,
-    required this.onTap,
-  });
+  const MoodCard({super.key, required this.type, required this.onTap});
 
   @override
   State<MoodCard> createState() => _MoodCardState();
 }
 
-class _MoodCardState extends State<MoodCard> with SingleTickerProviderStateMixin {
+class _MoodCardState extends State<MoodCard>
+    with SingleTickerProviderStateMixin {
   bool _isHovered = false;
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
@@ -65,12 +62,14 @@ class _MoodCardState extends State<MoodCard> with SingleTickerProviderStateMixin
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
               width: 150,
               decoration: BoxDecoration(
-                color: _isHovered 
+                color: _isHovered
                     ? color.withValues(alpha: 0.08)
                     : Colors.white,
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(
-                  color: _isHovered ? color.withValues(alpha: 0.5) : Colors.transparent,
+                  color: _isHovered
+                      ? color.withValues(alpha: 0.5)
+                      : Colors.transparent,
                   width: 2,
                 ),
                 boxShadow: [

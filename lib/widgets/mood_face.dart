@@ -8,24 +8,16 @@ class MoodFace extends StatelessWidget {
   final double size;
   final Color? color;
 
-  const MoodFace({
-    super.key,
-    required this.mood,
-    this.size = 100,
-    this.color,
-  });
+  const MoodFace({super.key, required this.mood, this.size = 100, this.color});
 
   @override
   Widget build(BuildContext context) {
     // Use provided color or fallback to the mood's default color
     final effectiveColor = color ?? mood.color;
-    
+
     return CustomPaint(
       size: Size(size, size),
-      painter: MoodPainter(
-        mood: mood,
-        color: effectiveColor,
-      ),
+      painter: MoodPainter(mood: mood, color: effectiveColor),
     );
   }
 }

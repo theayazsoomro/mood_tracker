@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum MoodType {
-  happy,
-  neutral,
-  sad,
-  angry,
-  frustrated,
-}
+enum MoodType { happy, neutral, sad, angry, frustrated }
 
 extension MoodTypeExtension on MoodType {
   Color get color {
@@ -44,8 +38,5 @@ class MoodEntry {
   final MoodType type;
   final DateTime date;
 
-  MoodEntry({
-    required this.type,
-    required this.date,
-  });
+  MoodEntry({required this.type, required this.date});
 }

@@ -36,27 +36,31 @@ class HomeScreen extends StatelessWidget {
                         child: _HeaderSection(isSmall: isSmall),
                       ),
                     ),
-                    
+
                     // Mood Selection Grid
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                        ),
                         child: _MoodSelectionSection(isSmall: isSmall),
                       ),
                     ),
-                    
+
                     SliverToBoxAdapter(
                       child: SizedBox(height: isSmall ? 64 : 100),
                     ),
-                    
+
                     // Recent Journey Timeline
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: horizontalPadding,
+                        ),
                         child: _TimelineSection(isSmall: isSmall),
                       ),
                     ),
-                    
+
                     const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
                   ],
                 ),
@@ -80,25 +84,26 @@ class _HeaderSection extends StatelessWidget {
         Text(
           'How are you feeling today?',
           textAlign: TextAlign.center,
-          style: (isSmall 
-                  ? Theme.of(context).textTheme.headlineMedium 
-                  : Theme.of(context).textTheme.displayMedium)
-              ?.copyWith(
-            fontWeight: FontWeight.w900,
-            color: const Color(0xFF0F172A),
-            letterSpacing: -1.5,
-          ),
+          style:
+              (isSmall
+                      ? Theme.of(context).textTheme.headlineMedium
+                      : Theme.of(context).textTheme.displayMedium)
+                  ?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xFF0F172A),
+                    letterSpacing: -1.5,
+                  ),
         ),
         const SizedBox(height: 16),
         Text(
           'Tracking your moods helps you understand your emotional patterns.',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: const Color(0xFF64748B),
-                fontWeight: FontWeight.w400,
-                fontSize: isSmall ? 16 : 18,
-                height: 1.5,
-              ),
+            color: const Color(0xFF64748B),
+            fontWeight: FontWeight.w400,
+            fontSize: isSmall ? 16 : 18,
+            height: 1.5,
+          ),
         ),
       ],
     );
@@ -119,10 +124,7 @@ class _MoodSelectionSection extends StatelessWidget {
       runSpacing: isSmall ? 16 : 24,
       alignment: WrapAlignment.center,
       children: MoodType.values.map((type) {
-        return MoodCard(
-          type: type,
-          onTap: () => provider.addMood(type),
-        );
+        return MoodCard(type: type, onTap: () => provider.addMood(type));
       }).toList(),
     );
   }
@@ -148,7 +150,8 @@ class _TimelineSection extends StatelessWidget {
           const _EmptyTimelineState()
         else
           SizedBox(
-            height: 200, // Increased height to prevent overflow and accommodate scale animations
+            height:
+                200, // Increased height to prevent overflow and accommodate scale animations
             child: ListView.separated(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
@@ -195,11 +198,11 @@ class _SectionHeader extends StatelessWidget {
         Text(
           title,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-                color: const Color(0xFF334155),
-                fontSize: isSmall ? 20 : 24,
-                letterSpacing: -0.5,
-              ),
+            fontWeight: FontWeight.w800,
+            color: const Color(0xFF334155),
+            fontSize: isSmall ? 20 : 24,
+            letterSpacing: -0.5,
+          ),
         ),
       ],
     );
@@ -220,7 +223,11 @@ class _EmptyTimelineState extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Icon(Icons.auto_awesome_rounded, size: 48, color: Colors.indigo.withValues(alpha: 0.3)),
+          Icon(
+            Icons.auto_awesome_rounded,
+            size: 48,
+            color: Colors.indigo.withValues(alpha: 0.3),
+          ),
           const SizedBox(height: 16),
           Text(
             'No moods logged yet',
@@ -234,10 +241,7 @@ class _EmptyTimelineState extends StatelessWidget {
           Text(
             'Start by selecting how you feel above!',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.grey.shade400,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
           ),
         ],
       ),

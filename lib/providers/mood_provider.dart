@@ -7,12 +7,30 @@ class MoodProvider with ChangeNotifier {
 
   // Mock data for mood entries
   final List<MoodEntry> _entries = [
-    MoodEntry(type: MoodType.happy, date: DateTime.now().subtract(const Duration(days: 6))),
-    MoodEntry(type: MoodType.neutral, date: DateTime.now().subtract(const Duration(days: 5))),
-    MoodEntry(type: MoodType.sad, date: DateTime.now().subtract(const Duration(days: 4))),
-    MoodEntry(type: MoodType.angry, date: DateTime.now().subtract(const Duration(days: 3))),
-    MoodEntry(type: MoodType.frustrated, date: DateTime.now().subtract(const Duration(days: 2))),
-    MoodEntry(type: MoodType.happy, date: DateTime.now().subtract(const Duration(days: 1))),
+    MoodEntry(
+      type: MoodType.happy,
+      date: DateTime.now().subtract(const Duration(days: 6)),
+    ),
+    MoodEntry(
+      type: MoodType.neutral,
+      date: DateTime.now().subtract(const Duration(days: 5)),
+    ),
+    MoodEntry(
+      type: MoodType.sad,
+      date: DateTime.now().subtract(const Duration(days: 4)),
+    ),
+    MoodEntry(
+      type: MoodType.angry,
+      date: DateTime.now().subtract(const Duration(days: 3)),
+    ),
+    MoodEntry(
+      type: MoodType.frustrated,
+      date: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+    MoodEntry(
+      type: MoodType.happy,
+      date: DateTime.now().subtract(const Duration(days: 1)),
+    ),
   ];
 
   /// Returns an unmodifiable list of mood entries.
