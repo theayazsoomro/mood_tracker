@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import '../models/mood_entry.dart';
 import 'mood_face.dart';
 
-class TimelineCard extends StatelessWidget {
+class TimelineCard extends StatefulWidget {
   final MoodEntry entry;
 
   const TimelineCard({
@@ -12,48 +12,67 @@ class TimelineCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final color = _getMoodColor(entry.type);
+  State<TimelineCard> createState() => _TimelineCardState();
+}
 
-    return Container(
-      width: 100,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            DateFormat('E, d').format(entry.date),
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey[500],
-            ),
-          ),
-          const SizedBox(height: 12),
-          MoodFace(mood: entry.type, size: 36, color: color),
-          const SizedBox(height: 8),
-          Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ],
-      ),
+class _TimelineCardState extends State<TimelineCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _translateAnimation;
+  late Animation<double> _glowAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
     );
+
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.1).chain(CurveTween(curve: Curves.easeOutQuart)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.1, end: 1.0).chain(CurveTween(curve: Curves.easeInQuad)),
+        weight: 60,
+      ),
+    ]).animate(_controller);
+
+    _translateAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: -12.0).chain(CurveTween(curve: Curves.easeOutQuart)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: -12.0, end: 0.0).chain(CurveTween(curve: Curves.easeInQuad)),
+        weight: 60,
+      ),
+    ]).animate(_controller);
+
+    _glowAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.05, end: 0.25).chain(CurveTween(curve: Curves.easeOut)),
+        weight: 40,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.25, end: 0.05).chain(CurveTween(curve: Curves.easeIn)),
+        weight: 60,
+      ),
+    ]).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTap() {
+    if (!_controller.isAnimating) {
+      _controller.forward(from: 0.0);
+    }
   }
 
   Color _getMoodColor(MoodType type) {
@@ -64,5 +83,74 @@ class TimelineCard extends StatelessWidget {
       case MoodType.angry: return Colors.red;
       case MoodType.frustrated: return Colors.orange;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _getMoodColor(widget.entry.type);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: _onTap,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, _translateAnimation.value),
+              child: Transform.scale(
+                scale: _scaleAnimation.value,
+                child: Container(
+                  width: 100,
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: color.withValues(alpha:_glowAnimation.value),
+                        blurRadius: 15,
+                        spreadRadius: _glowAnimation.value * 10,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        DateFormat('E, d').format(widget.entry.date),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF94A3B8),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      MoodFace(mood: widget.entry.type, size: 40, color: color),
+                      const SizedBox(height: 12),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.8),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

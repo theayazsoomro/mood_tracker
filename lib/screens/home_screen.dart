@@ -11,54 +11,70 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC), // Modern wellness soft background
+      backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1100),
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 80, 24, 64),
-                    child: _buildHeader(context),
-                  ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isSmall = constraints.maxWidth < 600;
+            final horizontalPadding = isSmall ? 20.0 : 48.0;
+
+            return Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 1200),
+                child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          horizontalPadding,
+                          isSmall ? 40 : 80,
+                          horizontalPadding,
+                          isSmall ? 40 : 64,
+                        ),
+                        child: _buildHeader(context, isSmall),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        child: _MoodSelectionSection(isSmall: isSmall),
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: isSmall ? 64 : 100),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                        child: _TimelineSection(isSmall: isSmall),
+                      ),
+                    ),
+                    const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
+                  ],
                 ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: _MoodSelectionSection(),
-                  ),
-                ),
-                const SliverToBoxAdapter(child: SizedBox(height: 120)),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: _TimelineSection(),
-                  ),
-                ),
-                const SliverPadding(padding: EdgeInsets.only(bottom: 80)),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isSmall) {
     return Column(
       children: [
         Text(
           'How are you feeling today?',
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontWeight: FontWeight.w900,
-                color: const Color(0xFF0F172A),
-                fontSize: 48,
-                letterSpacing: -1.5,
-              ),
+          style: (isSmall 
+                  ? Theme.of(context).textTheme.headlineMedium 
+                  : Theme.of(context).textTheme.displayMedium)
+              ?.copyWith(
+            fontWeight: FontWeight.w900,
+            color: const Color(0xFF0F172A),
+            letterSpacing: -1.5,
+          ),
         ),
         const SizedBox(height: 16),
         Text(
@@ -67,6 +83,7 @@ class HomeScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: const Color(0xFF64748B),
                 fontWeight: FontWeight.w400,
+                fontSize: isSmall ? 16 : 18,
                 height: 1.5,
               ),
         ),
@@ -76,13 +93,16 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _MoodSelectionSection extends StatelessWidget {
+  final bool isSmall;
+  const _MoodSelectionSection({required this.isSmall});
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<MoodProvider>(context, listen: false);
 
     return Wrap(
-      spacing: 24,
-      runSpacing: 24,
+      spacing: isSmall ? 16 : 24,
+      runSpacing: isSmall ? 16 : 24,
       alignment: WrapAlignment.center,
       children: MoodType.values.map((type) {
         return MoodCard(
@@ -97,6 +117,9 @@ class _MoodSelectionSection extends StatelessWidget {
 }
 
 class _TimelineSection extends StatelessWidget {
+  final bool isSmall;
+  const _TimelineSection({required this.isSmall});
+
   @override
   Widget build(BuildContext context) {
     final entries = context.watch<MoodProvider>().entries;
@@ -122,6 +145,7 @@ class _TimelineSection extends StatelessWidget {
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w800,
                     color: const Color(0xFF334155),
+                    fontSize: isSmall ? 20 : 24,
                     letterSpacing: -0.5,
                   ),
             ),
@@ -129,14 +153,15 @@ class _TimelineSection extends StatelessWidget {
         ),
         const SizedBox(height: 48),
         SizedBox(
-          height: 110,
+          height: 180,
           child: Center(
             child: ListView.separated(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               itemCount: entries.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 20),
+              separatorBuilder: (_, __) => const SizedBox(width: 16),
               itemBuilder: (context, index) {
                 return TimelineCard(entry: entries[index]);
               },
