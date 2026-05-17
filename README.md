@@ -2,7 +2,7 @@
 
 A beautiful, intuitive, and responsive Flutter web application designed to help users track their daily emotional journey with ease.
 
-[Live Demo](https://mindful-mood-tracker.vercel.app) | [GitHub Repository](https://github.com/theayazsoomro/mood_tracker)
+[Live Demo](https://mindful-mood-tracker.vercel.app) | [GitHub Repository](https://github.com/theayazsoomro/mood_tracker) | [Flutter CI/CD](https://github.com/theayazsoomro/mood_tracker/actions)
 
 ## ✨ Features
 
